@@ -1,10 +1,35 @@
-# FranklinWH Integration for Home Assistant
+<p align="center">
+  <img src=".github/franklinwh.png" alt="FranklinWH" width="120" />
+</p>
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge)](https://github.com/hacs/integration)
+<h1 align="center">FranklinWH Integration for Home Assistant</h1>
 
-Full-featured Home Assistant integration for FranklinWH home energy storage systems (aPower / aGate). Configurable from the Home Assistant UI — no YAML required.
+<p align="center">
+  Monitor and control FranklinWH aPower / aGate energy storage from Home Assistant — fully UI-configurable, multi-gateway aware, Energy-dashboard ready.
+</p>
+
+<p align="center">
+  <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge" alt="HACS Custom"></a>
+  <a href="https://github.com/cmarko89/homeassistant-franklinwh/releases"><img src="https://img.shields.io/github/v/release/cmarko89/homeassistant-franklinwh?style=for-the-badge" alt="Latest release"></a>
+  <a href="https://www.home-assistant.io/"><img src="https://img.shields.io/badge/Home%20Assistant-2026.2%2B-41BDF5?style=for-the-badge&logo=home-assistant&logoColor=white" alt="HA 2026.2+"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-green?style=for-the-badge" alt="License"></a>
+</p>
 
 > ⚠️ This project is unofficial and not affiliated with FranklinWH.
+
+---
+
+## Table of contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Entities](#entities)
+- [Services](#services)
+- [Migration from YAML](#migration-from-yaml)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 

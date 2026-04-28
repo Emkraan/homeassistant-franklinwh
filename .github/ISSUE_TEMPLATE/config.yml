@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/cmarko89/homeassistant-franklinwh/discussions
+    about: For general questions, setup help, or feature brainstorming, please open a Discussion instead of an Issue.
+  - name: FranklinWH official support
+    url: https://www.franklinwh.com/support
+    about: For hardware, account, or cloud-service issues that are not specific to this Home Assistant integration.

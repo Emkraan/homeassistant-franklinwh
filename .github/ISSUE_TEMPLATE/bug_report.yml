@@ -1,0 +1,136 @@
+name: Bug report
+description: Something is broken or behaving unexpectedly in the integration.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out **every** field — bug reports without versions or logs almost always get closed without a fix.
+
+        ### How to capture the data this form asks for
+
+        **Integration version**
+        Settings → Devices & Services → FranklinWH (3-dot menu) → *About this integration* → version. Or check `manifest.json` in the installed `custom_components/franklin_wh/`.
+
+        **Home Assistant version**
+        Settings → About → Home Assistant Core. Include the install type (Container / OS / Supervised / Core).
+
+        **Debug logs**
+        Add this block to `configuration.yaml`, restart, reproduce the issue, then grab logs from Settings → System → Logs (or `home-assistant.log`):
+
+        ```yaml
+        logger:
+          default: warning
+          logs:
+            custom_components.franklin_wh: debug
+            franklinwh: debug
+        ```
+
+        Redact your gateway SN (replace digits with `x`), email, and any tokens before pasting.
+
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version
+      placeholder: "e.g. 2026.4.0"
+    validations:
+      required: true
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "e.g. 2026.5.1 (Container)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: How did you install the integration?
+      options:
+        - HACS (Custom repository)
+        - Manual copy to custom_components/
+        - Other (please specify in description)
+    validations:
+      required: true
+
+  - type: input
+    id: gateway_model
+    attributes:
+      label: Gateway model / firmware
+      description: From the FranklinWH app, Settings → Device Info. Firmware version is the most useful field.
+      placeholder: "e.g. aGate v2 — fw 1.4.7"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: gateway_count
+    attributes:
+      label: Number of gateways on this account
+      options:
+        - "1"
+        - "2"
+        - "3+"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: accessories
+    attributes:
+      label: Connected accessories (check all that apply)
+      options:
+        - label: Smart Circuit module
+        - label: Generator module
+        - label: V2L
+        - label: None / unsure
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug. What did you expect, what actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Add the integration via UI
+        2. Toggle Smart Circuit 1 from off → on
+        3. Observe entity state stays "off" for 30s
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: |
+        Paste the **debug-level** log output for the time window of the bug.
+        Redact your gateway SN, email, and tokens. The form auto-wraps in a code block.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: yaml
+    attributes:
+      label: Legacy YAML (only if applicable)
+      description: If you still have `franklin_wh` blocks in `configuration.yaml`, paste them here (redacted).
+      render: yaml
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I have searched existing issues and confirmed this is not a duplicate.
+          required: true
+        - label: I have redacted my gateway SN, email, and any tokens from logs.
+          required: true
+        - label: I am running the latest released version of this integration.
+          required: true
