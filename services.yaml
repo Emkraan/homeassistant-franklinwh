@@ -1,0 +1,80 @@
+set_mode:
+  name: Set operating mode
+  description: Change the FranklinWH operating mode (and optionally the SoC reserve).
+  fields:
+    gateway:
+      name: Gateway
+      description: Gateway ID. Required only if multiple gateways are configured.
+      example: "100xxxxxxxxxxxx"
+      selector:
+        text:
+    mode:
+      name: Mode
+      description: Operating mode to switch to.
+      required: true
+      selector:
+        select:
+          options:
+            - time_of_use
+            - self_consumption
+            - emergency_backup
+    reserve_soc:
+      name: Reserve SoC (%)
+      description: Battery minimum reserve for the selected mode.
+      example: 20
+      selector:
+        number:
+          min: 0
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+set_export_settings:
+  name: Set grid-export settings
+  description: Change the grid-export mode and optional kW cap.
+  fields:
+    gateway:
+      name: Gateway
+      description: Gateway ID. Required only if multiple gateways are configured.
+      example: "100xxxxxxxxxxxx"
+      selector:
+        text:
+    export_mode:
+      name: Export mode
+      description: How energy may be exported to the grid.
+      required: true
+      selector:
+        select:
+          options:
+            - solar_only
+            - solar_and_apower
+            - no_export
+    export_limit_kw:
+      name: Export limit (kW)
+      description: Maximum export power. Omit for unlimited; ignored when export_mode is no_export.
+      example: 5.0
+      selector:
+        number:
+          min: 0
+          max: 10000
+          step: 0.1
+          unit_of_measurement: kW
+          mode: box
+
+set_generator:
+  name: Enable or disable generator
+  description: Toggle the FranklinWH generator output.
+  fields:
+    gateway:
+      name: Gateway
+      description: Gateway ID. Required only if multiple gateways are configured.
+      example: "100xxxxxxxxxxxx"
+      selector:
+        text:
+    enabled:
+      name: Enabled
+      description: True to enable, false to disable.
+      required: true
+      selector:
+        boolean:

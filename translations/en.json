@@ -1,0 +1,137 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "FranklinWH",
+        "description": "Sign in with your FranklinWH account credentials.",
+        "data": {
+          "username": "Email address",
+          "password": "Password"
+        }
+      },
+      "pick_gateway": {
+        "title": "Select gateway",
+        "description": "Multiple gateways were found on this account. Pick one.",
+        "data": {
+          "gateway": "Gateway"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate",
+        "description": "Your stored FranklinWH password no longer works. Sign in again.",
+        "data": {
+          "username": "Email address",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Username or password is incorrect.",
+      "account_locked": "This account is currently locked. Wait, then try again.",
+      "cannot_connect": "Could not reach the FranklinWH cloud.",
+      "no_gateways": "No FranklinWH gateways were found on this account."
+    },
+    "abort": {
+      "already_configured": "This gateway is already configured.",
+      "cannot_connect": "Could not reach the FranklinWH cloud.",
+      "reauth_successful": "Re-authentication successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "FranklinWH options",
+        "data": {
+          "prefix": "Entity name prefix",
+          "update_interval": "Update interval (seconds)",
+          "tolerate_stale_data": "Keep last-known data when the cloud fails",
+          "reverse_battery_sign": "Flip battery-use sign",
+          "reverse_grid_sign": "Flip grid-use sign"
+        }
+      }
+    }
+  },
+  "issues": {
+    "yaml_deprecated": {
+      "title": "FranklinWH YAML configuration is deprecated",
+      "description": "Gateway {gateway} was imported from YAML into the UI. Remove the franklin_wh entries from configuration.yaml and manage the integration via Settings → Devices & Services."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "state_of_charge": {"name": "State of charge"},
+      "home_load": {"name": "Home load"},
+      "home_use": {"name": "Home use"},
+      "battery_use": {"name": "Battery use"},
+      "grid_use": {"name": "Grid use"},
+      "grid_status": {
+        "name": "Grid status",
+        "state": {
+          "NORMAL": "Normal",
+          "DOWN": "Down",
+          "OFF": "Off"
+        }
+      },
+      "solar_production": {"name": "Solar production"},
+      "solar_energy": {"name": "Solar energy"},
+      "battery_charge": {"name": "Battery charge"},
+      "battery_discharge": {"name": "Battery discharge"},
+      "generator_use": {"name": "Generator output"},
+      "generator_energy": {"name": "Generator energy"},
+      "grid_import": {"name": "Grid import"},
+      "grid_export": {"name": "Grid export"},
+      "switch_1_load": {"name": "Smart Circuit 1 load"},
+      "switch_1_lifetime_use": {"name": "Smart Circuit 1 lifetime use"},
+      "switch_2_load": {"name": "Smart Circuit 2 load"},
+      "switch_2_lifetime_use": {"name": "Smart Circuit 2 lifetime use"},
+      "v2l_use": {"name": "V2L use"},
+      "v2l_export": {"name": "V2L export"},
+      "v2l_import": {"name": "V2L import"}
+    },
+    "binary_sensor": {
+      "grid_online": {"name": "Grid online"},
+      "generator_enabled": {"name": "Generator enabled"}
+    },
+    "switch": {
+      "switch_1": {"name": "Smart Circuit 1"},
+      "switch_2": {"name": "Smart Circuit 2"},
+      "v2l_switch": {"name": "V2L circuit"}
+    },
+    "number": {
+      "battery_reserve": {"name": "Battery reserve"},
+      "export_limit": {"name": "Grid export limit"}
+    },
+    "select": {
+      "operating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "time_of_use": "Time of use",
+          "self_consumption": "Self consumption",
+          "emergency_backup": "Emergency backup"
+        }
+      },
+      "export_mode": {
+        "name": "Grid export mode",
+        "state": {
+          "solar_only": "Solar only",
+          "solar_and_apower": "Solar and battery",
+          "no_export": "No export"
+        }
+      }
+    }
+  },
+  "services": {
+    "set_mode": {
+      "name": "Set operating mode",
+      "description": "Change the FranklinWH operating mode (and optionally the SoC reserve)."
+    },
+    "set_export_settings": {
+      "name": "Set grid-export settings",
+      "description": "Change the grid-export mode and optional kW cap."
+    },
+    "set_generator": {
+      "name": "Enable or disable generator",
+      "description": "Toggle the FranklinWH generator output."
+    }
+  }
+}

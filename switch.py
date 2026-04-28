@@ -1,161 +1,91 @@
-#!/usr/bin/env python
+"""Switch platform for FranklinWH smart circuits."""
 
-import franklinwh
-
-from homeassistant.components.switch import (
-    SwitchEntity,
-    PLATFORM_SCHEMA as PARENT_PLATFORM_SCHEMA,
-)
-import voluptuous as vol
-import homeassistant.helpers.config_validation as cv
-from homeassistant.const import (
-        CONF_USERNAME,
-        CONF_PASSWORD,
-        CONF_ID,
-        CONF_NAME,
-        CONF_SWITCHES,
-        )
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-
-from homeassistant.helpers.update_coordinator import (
-    CoordinatorEntity,
-    DataUpdateCoordinator,
-)
+from __future__ import annotations
 
 import logging
+
+from franklinwh import SwitchState
+
+from homeassistant.components.switch import SwitchEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import DOMAIN
+from .coordinator import FranklinDataUpdateCoordinator
+from .entity import FranklinBaseEntity
+
 _LOGGER = logging.getLogger(__name__)
-DEFAULT_UPDATE_INTERVAL = 30
 
-PLATFORM_SCHEMA = PARENT_PLATFORM_SCHEMA.extend(
-        {
-            vol.Required(CONF_USERNAME): cv.string,
-            vol.Required(CONF_PASSWORD): cv.string,
-            vol.Required(CONF_ID): cv.string,
-            vol.Required(CONF_NAME): cv.string,
-            vol.Required(CONF_SWITCHES): cv.ensure_list(vol.In([1, 2, 3])),
-            vol.Optional("use_sn", default=False): cv.boolean,
-            vol.Optional("prefix", default=False): cv.string,
-            vol.Optional("update_interval", default=DEFAULT_UPDATE_INTERVAL): cv.time_period,
-            }
-        )
+# Three relays exposed by the Smart Circuit module.
+RELAY_LABELS = ("switch_1", "switch_2", "v2l_switch")
+RELAY_FRIENDLY = ("Smart Circuit 1", "Smart Circuit 2", "V2L Circuit")
 
-async def async_setup_platform(
+
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the sensor platform."""
-    username: str = config[CONF_USERNAME]
-    password: str = config[CONF_PASSWORD]
-    gateway: str = config[CONF_ID]
-    name: str = config[CONF_NAME]
-    update_interval: timedelta = config["update_interval"]
+    """Add one switch per physical relay if the gateway reports a Smart Circuit module."""
+    coordinator: FranklinDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    data = coordinator.data
+    if data is None or not data.has_smart_circuits or data.switches is None:
+        _LOGGER.debug(
+            "No Smart Circuit module reported for %s — skipping switches",
+            coordinator.gateway_id,
+        )
+        return
 
-    # TODO(richo) why does it string the default value
-    if config["use_sn"] and config["use_sn"] != "False":
-        unique_id = gateway
-    else:
-        unique_id = None
-
-    # TODO(richo) why does it string the default value
-    if config["prefix"] and config["prefix"] != "False":
-        prefix = config["prefix"]
-    else:
-        prefix = "FranklinWH"
-
-
-    switches: list[int] = list(map(lambda x: x-1, config[CONF_SWITCHES]))
-
-    fetcher = franklinwh.TokenFetcher(username, password)
-    client = franklinwh.Client(fetcher, gateway)
-
-    async def _update_data():
-        _LOGGER.debug("Fetching latest switch data from FranklinWH...")
-        try:
-            return await client.get_smart_switch_state()
-
-        except franklinwh.client.DeviceTimeoutException as e:
-            _LOGGER.warning("Error getting data from FranklinWH - Device Timeout: %s", e)
-        except franklinwh.client.GatewayOfflineException as e:
-            _LOGGER.warning("Error getting data from FranklinWH - Gateway Offline %s", e)
-        except franklinwh.client.AccountLockedException as e:
-            _LOGGER.warning("Error getting data from FranklinWH - Account Locked %s", e)
-        except franklinwh.client.InvalidCredentialsException as e:
-            _LOGGER.warning("Error getting data from FranklinWH - Invalid Credentials %s", e)
-
-    # TODO(richo) This should be memoized and shared among instances
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name="franklinwh",
-        update_method=_update_data,
-        update_interval=update_interval,
-        always_update=False
+    async_add_entities(
+        FranklinSmartSwitch(coordinator, idx) for idx in range(3)
     )
 
-    # Initial fetch (If we don't kick this off manually, we'll get unavailable
-    # sensors until the first scheduled update).
-    await coordinator.async_refresh()
 
-    add_entities([
-        SmartCircuitSwitch(prefix, unique_id, name, switches, client, coordinator),
-        ])
+class FranklinSmartSwitch(FranklinBaseEntity, SwitchEntity):
+    """A single FranklinWH smart-circuit relay."""
 
-# Is it chill to have a switch in here? We'll see!
-class SmartCircuitSwitch(CoordinatorEntity, SwitchEntity):
-    def __init__(self, prefix, unique_id, name, switches, client, coordinator):
-        super().__init__(coordinator)
-        self._is_on = False
-        self.switches = switches
-        self._attr_name = "{} {}".format(prefix, name)
-        self.client = client
-        self.coordinator = coordinator
-        if unique_id:
-            self._attr_has_entity_name = True
-            self._attr_unique_id = unique_id + "_" + name
+    def __init__(
+        self,
+        coordinator: FranklinDataUpdateCoordinator,
+        index: int,
+    ) -> None:
+        """Initialize."""
+        super().__init__(coordinator, RELAY_LABELS[index])
+        self._index = index
+        self._attr_translation_key = RELAY_LABELS[index]
+        self._attr_name = RELAY_FRIENDLY[index]
 
     @property
-    def available(self) -> bool:
-        _LOGGER.debug("Checking for switch availability")
-        return self.coordinator.last_update_success and self.coordinator.data is not None
+    def is_on(self) -> bool | None:
+        """Current relay state."""
+        data = self.coordinator.data
+        if data is None or data.switches is None:
+            return None
+        try:
+            return bool(data.switches[self._index])
+        except (IndexError, TypeError):
+            return None
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """Turn this relay on."""
+        await self._set(True)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn this relay off."""
+        await self._set(False)
+
+    async def _set(self, value: bool) -> None:
+        state: list[bool | None] = [None, None, None]
+        state[self._index] = value
+        try:
+            await self.coordinator.client.set_smart_switch_state(SwitchState(state))
+        except RuntimeError as err:
+            # Gateway reports merged switches — abort cleanly so HA surfaces the error.
+            _LOGGER.error("Smart-switch set failed: %s", err)
+            raise
+        await self.coordinator.async_request_refresh()
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        state = self.coordinator.data
-        if state is None:
-            _LOGGER.warning("Corrdinator data was None")
-            # I think this should never happen, since it wouldn't be Available but here we are
-            return
-        values = list(map(lambda x: state[x], self.switches))
-        if all(values):
-            self._is_on = True
-        elif all(map(lambda x: x is False, values)):
-            self._is_on = False
-        else:
-            # Something's fucky!
-            self._is_on = None
         self.async_write_ha_state()
-
-    @property
-    def is_on(self):
-        """If the switch is currently on or off."""
-        return self._is_on
-
-    async def async_turn_on(self, **kwargs):
-        """Turn the switch on."""
-        switches = [None, None, None]
-        for i in self.switches:
-            switches[i] = True
-        await self.client.set_smart_switch_state(switches)
-        await self.coordinator.async_refresh()
-
-    async def async_turn_off(self, **kwargs):
-        """Turn the switch off."""
-        switches = [None, None, None]
-        for i in self.switches:
-            switches[i] = False
-        await self.client.set_smart_switch_state(switches)
-        await self.coordinator.async_refresh()

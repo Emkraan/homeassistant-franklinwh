@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
-This is a custom integration for [Home Assistant](https://www.home-assistant.io/) that provides monitoring for FranklinWH home energy storage systems.
+Full-featured Home Assistant integration for FranklinWH home energy storage systems (aPower / aGate). Configurable from the Home Assistant UI — no YAML required.
 
 > ⚠️ This project is unofficial and not affiliated with FranklinWH.
 
@@ -10,158 +10,191 @@ This is a custom integration for [Home Assistant](https://www.home-assistant.io/
 
 ## Features
 
-- Live battery status (SoC, charging/discharging)
-- Solar production and energy generation
-- Grid import/export monitoring
-- Generator and home load insights
-- Switch load and usage tracking
-- Support for V2L (Vehicle-to-Load) data
+- **UI configuration** — add the integration from Settings → Devices & Services. No YAML needed.
+- **Multi-gateway aware** — accounts with more than one aGate get a picker; each gateway becomes its own device with its own entities.
+- **Reauthentication flow** — when your password changes, Home Assistant prompts to re-enter it; no restart needed.
+- **One device, all entities** — every sensor, switch, number, and select lives under a single FranklinWH device card.
+- **Read & write** — not just monitoring. Toggle smart circuits, change operating mode, set battery reserve, change export mode and limit, enable/disable the generator.
+- **Energy Dashboard ready** — kWh sensors carry the right device classes for the HA Energy panel.
+- **Stale-tolerant polling** — keeps the last good reading on the dashboard during transient cloud outages instead of strobing entities to "unavailable".
+- **Sign-flip toggles** — invert battery / grid sign at the entity layer (no template-sensor workaround).
+- **Service calls** — `franklin_wh.set_mode`, `franklin_wh.set_export_settings`, `franklin_wh.set_generator` for use in scripts and automations.
 
 ---
 
 ## Installation
 
-### Via HACS (Recommended)
+### Via HACS (recommended)
 
-1. In Home Assistant, go to **HACS → Integrations**.
-2. Click the menu (⋮) → **Custom repositories**.
-3. Add this repository URL: https://github.com/richo/homeassistant-franklinwh.git
-4. Choose category **Integration** and click **Add**.
-5. Install the **FranklinWH** integration from the list.
+1. In Home Assistant, open **HACS → Integrations**.
+2. Menu (⋮) → **Custom repositories**.
+3. Add the repo URL: `https://github.com/cmarko89/homeassistant-franklinwh`
+4. Category: **Integration**. Click **Add**.
+5. Install **FranklinWH** from the list.
 6. Restart Home Assistant.
+7. **Settings → Devices & Services → Add Integration → FranklinWH** and follow the prompts.
 
-### Manual Installation (Advanced)
+### Manual
 
-1. Download this repository as a ZIP.
-2. Extract it to your Home Assistant `custom_components/franklin_wh/` directory.
-3. Restart Home Assistant.
+1. Copy this repository's contents into `<config>/custom_components/franklin_wh/`.
+2. Restart Home Assistant.
+3. Add the integration from the UI as above.
 
 ---
 
 ## Configuration
 
-This integration currently requires **manual YAML configuration** in your `configuration.yaml` file.
+All configuration is done via the UI. You will need:
 
-> 💡 For security, store your password in `secrets.yaml` instead of writing it directly in your config.
-> 🔎 You can find your Gateway ID / Serial Number in the FranklinWH mobile app under:
-> **Settings → Device Info → SN**
+- The **email and password** for your FranklinWH account.
+- (Optional) Your **gateway serial number** — needed only if you have multiple aGates and want to confirm which one to add.
 
-### Configuration Example
+> Find the gateway SN in the FranklinWH mobile app: **Settings → Device Info → SN**.
 
-```yaml
-sensor:
-  - platform: franklin_wh
-    username: "email@domain.com"
-    password: !secret franklinwh_password
-    id: "100xxxxxxxxxxxx"
-    tolerate_stale_data: true
-```
+### Options
 
-The `tolerate_stale_data` key is not required, but is recommended. The
-FranklinWH API often fails to return valid data, that flag will persist the
-last good data until it's able to fetch more, substantially smoothing out the
-graphs. However, if accuracy is more important to you than consistency, you
-should not enable that flag.
+After setup, click **Configure** on the integration card to access:
 
-### Smart Relays
+| Option | Default | What it does |
+|---|---|---|
+| Entity name prefix | `FranklinWH` | Prefix used in entity friendly names |
+| Update interval (seconds) | `30` | How often to poll the FranklinWH cloud (10–600s) |
+| Keep last-known data when the cloud fails | `on` | Avoids dashboard strobing during transient outages |
+| Flip battery-use sign | `off` | Invert sign of `battery_use` so charge/discharge match your convention |
+| Flip grid-use sign | `off` | Invert sign of `grid_use` so import/export match your convention |
 
-The integration can also manage smart relays, if you have them installed in your gateway. It is
-vitally important not to enable this feature if you do not have them physically present in your
-installation, as well as to ensure that the configuration here matches your configuration.
+---
 
-FranklinWH supports combining relays, which is why the `switches` parameter is an array- if you have
-multiple switches ganged together, include both of their indexes.
+## Entities
 
-An example:
+All entities are grouped under one device per gateway.
 
-```yaml
-switch:
-  - platform: franklin_wh
-    username: "email@domain.com"
-    password: !secret franklinwh_password
-    id: "100xxxxxxxxxxxx"
-    switches: [3]
-    name: "FWH switch1"
+### Sensors
 
-  - platform: franklin_wh
-    username: "email@domain.com"
-    password: !secret franklinwh_password
-    id: "100xxxxxxxxxxxx"
-    switches: [1, 2]
-    name: "FWH switch2"
-```
+| Entity | Description | Unit |
+|---|---|---|
+| State of charge | Battery state of charge | % |
+| Battery use | Live charge/discharge power | kW |
+| Battery charge | Lifetime energy charged | kWh |
+| Battery discharge | Lifetime energy discharged | kWh |
+| Home load | Live home power use | kW |
+| Home use | Lifetime home energy | kWh |
+| Grid use | Live import/export power | kW |
+| Grid import | Lifetime energy imported | kWh |
+| Grid export | Lifetime energy exported | kWh |
+| Grid status | Enum: NORMAL / DOWN / OFF | — |
+| Solar production | Live solar power | kW |
+| Solar energy | Lifetime solar energy | kWh |
+| Generator output | Live generator power | kW |
+| Generator energy | Lifetime generator energy | kWh |
+| Smart Circuit 1 / 2 load | Live load on each smart circuit | W |
+| Smart Circuit 1 / 2 lifetime use | Lifetime energy per circuit | Wh |
+| V2L use / export / import | Vehicle-to-Load metrics | W / Wh |
 
-After updating your configuration, restart Home Assistant to apply the changes.
+### Binary sensors
 
-### Advanced Configuration
+| Entity | When `on` |
+|---|---|
+| Grid online | Grid status is NORMAL |
+| Generator enabled | Generator is currently running |
 
-| Configuration Option         | Unit   | Description                                                               | sensor | switch |
-| ---------------------------- | ------ | --------------------------------------------------------------------------| ------ | ------ |
-| `use_sn`                     | bool   | Use the gateway's SN as a prefix when creating entities                   |  ✅    |   ✅   |
-| `prefix`                     | string | Specity a prefix to be used when creating entities                        |  ✅    |   ✅   |
-| `update_interval`            | time   | Period to update entities from franklinwh. Default 30s                    |  ✅    |   ✅   |
-| `tolerate_stale_data`        | bool   | Continue to show stale data on the dashboard for one cycle instead of showing the sensor unavailable                   |  ✅    |        |
+### Switches (only created if a Smart Circuit module is detected)
 
+| Entity | Controls |
+|---|---|
+| Smart Circuit 1 | Relay 1 |
+| Smart Circuit 2 | Relay 2 |
+| V2L circuit | Relay 3 |
 
-## Available Entities
+> ⚠️ If two circuits are physically merged at the gateway (`SwMerge`), the FranklinWH cloud will refuse mismatched commands to protect your wiring. Toggling one will return an error in that case — set both to the same value, or unmerge in the FranklinWH app.
 
-| Entity Name                          | Description                               | Unit      |
-|-------------------------------------|-------------------------------------------|-----------|
-| FranklinWH State of Charge          | Battery state of charge                   | %         |
-| FranklinWH Battery Use              | Battery charging/discharging rate         | kW        |
-| FranklinWH Battery Charge           | Total energy charged to battery           | kWh       |
-| FranklinWH Battery Discharge        | Total energy discharged from battery      | kWh       |
-| FranklinWH Home Load                | Instantaneous home power use              | kW        |
-| FranklinWH Home Use                 | Total energy consumed by home             | kWh       |
-| FranklinWH Grid Use                 | Net grid power usage                      | kW        |
-| FranklinWH Grid Import              | Total energy imported from grid           | kWh       |
-| FranklinWH Grid Export              | Total energy exported to grid             | kWh       |
-| FranklinWH Solar Production         | Instantaneous solar power                 | kW        |
-| FranklinWH Solar Energy             | Total solar energy produced               | kWh       |
-| FranklinWH Generator Use            | Generator power output (live)             | kW        |
-| FranklinWH Generator Energy         | Total generator energy                    | kWh       |
-| FranklinWH Switch 1 Load            | Power draw on Switch 1                    | W         |
-| FranklinWH Switch 1 Lifetime Use    | Total energy used by Switch 1             | Wh        |
-| FranklinWH Switch 2 Load            | Power draw on Switch 2                    | W         |
-| FranklinWH Switch 2 Lifetime Use    | Total energy used by Switch 2             | Wh        |
-| FranklinWH V2L Use                  | Power use via Vehicle-to-Load             | W         |
-| FranklinWH V2L Import               | Total energy drawn from V2L               | Wh        |
-| FranklinWH V2L Export               | Total energy delivered to V2L             | Wh        |
+### Number
 
-# Flipping sensors
+| Entity | Range | Notes |
+|---|---|---|
+| Battery reserve | 0–100 % | Reserves battery SoC for the **active** operating mode |
+| Grid export limit | 0–100 kW | Hidden when export mode is "no export" |
 
-If you want to reverse a sensor, you can create a template sensor:
+### Select
+
+| Entity | Options |
+|---|---|
+| Operating mode | Time of use / Self consumption / Emergency backup |
+| Grid export mode | Solar only / Solar and battery / No export |
+
+---
+
+## Services
+
+### `franklin_wh.set_mode`
+
+Change operating mode and (optionally) the SoC reserve in one call.
 
 ```yaml
-  - sensor:
-    - name: corrected_battery_use
-      state: >
-        {{ -(states('sensor.franklinwh_battery_use') | float) }}
-      unit_of_measurement: kW
-      state_class: measurement
-      device_class: power
-  - sensor:
-    - name: corrected_grid_use
-      state: >
-        {{ -(states('sensor.franklinwh_grid_use') | float) }}
-      unit_of_measurement: kW
-      state_class: measurement
-      device_class: power
+service: franklin_wh.set_mode
+data:
+  mode: time_of_use     # or self_consumption / emergency_backup
+  reserve_soc: 20       # optional, 0–100
+  gateway: "100xxxx"    # optional, only needed if you have multiple gateways
 ```
 
-Troubleshooting
-	•	If no entities appear, confirm your username, password, and gateway ID.
-	•	Check that FranklinWH cloud services are online.
-	•	Review logs via Settings → System → Logs for errors containing franklin_wh.
+### `franklin_wh.set_export_settings`
 
-Contributing
+```yaml
+service: franklin_wh.set_export_settings
+data:
+  export_mode: solar_and_apower   # or solar_only / no_export
+  export_limit_kw: 5.0            # optional, ignored when no_export
+```
 
-Contributions are welcome! Please fork the repository and open a pull request:
+### `franklin_wh.set_generator`
 
-👉 https://github.com/richo/homeassistant-franklinwh
+```yaml
+service: franklin_wh.set_generator
+data:
+  enabled: true
+```
 
-License
+---
 
-This project is dual-licensed under the MIT License and the Apache License 2.0.
+## Migration from YAML
 
-You may choose either license when using or contributing to this project.
+Earlier versions of this integration required `sensor:` and `switch:` blocks in `configuration.yaml`. On startup, the integration will:
+
+1. **Auto-import** legacy YAML into a config entry,
+2. Raise a **Repairs issue** prompting you to remove the YAML, and
+3. Continue to honor the YAML for one release cycle.
+
+After the import succeeds, delete the `franklin_wh` blocks from `configuration.yaml`. The UI flow is now the only supported path.
+
+---
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `Invalid auth` during setup | Wrong email/password | Double-check; note that FranklinWH may temporarily lock the account after several failed tries |
+| `Account locked` | Too many failed logins | Wait 15 minutes |
+| `Cannot connect` | Cloud outage or DNS | Check `https://energy.franklinwh.com/` from the HA host |
+| Entities go "unavailable" intermittently | Cloud is flaky | Make sure **Keep last-known data when the cloud fails** is enabled in options |
+| Smart-circuit toggle returns `RuntimeError` | The gateway has the relays merged (`SwMerge=1`) | Toggle both relays together via the service call, or unmerge in the FranklinWH app |
+| No switches appear | Gateway reports no Smart Circuit module | Confirm hardware presence in the FranklinWH app |
+
+Enable verbose logs with:
+
+```yaml
+logger:
+  logs:
+    custom_components.franklin_wh: debug
+    franklinwh: debug
+```
+
+---
+
+## Contributing
+
+Issues and pull requests welcome at <https://github.com/cmarko89/homeassistant-franklinwh>.
+
+## License
+
+Dual-licensed under the MIT License and the Apache License 2.0. Pick whichever you prefer.
