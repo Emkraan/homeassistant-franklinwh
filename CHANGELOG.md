@@ -2,6 +2,12 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
+## [2026.4.2] — 2026-04-29
+
+### Fixed
+
+- README header image uses absolute raw.githubusercontent.com URL — fixes broken image in HACS.
+
 ## [2026.4.1] — 2026-04-28
 
 ### Fixed

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/franklinwh.png" alt="FranklinWH" width="120" />
+  <img src="https://raw.githubusercontent.com/Emkraan/homeassistant-franklinwh/main/.github/franklinwh.png" alt="FranklinWH" width="120" />
 </p>
 
 <h1 align="center">FranklinWH Integration for Home Assistant</h1>
