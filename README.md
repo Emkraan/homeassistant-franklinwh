@@ -50,9 +50,15 @@
 
 ### Via HACS (recommended)
 
+Click the badge below to open HACS and add this repository in one step:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Emkraan&repository=homeassistant-franklinwh&category=integration)
+
+Or manually:
+
 1. In Home Assistant, open **HACS → Integrations**.
 2. Menu (⋮) → **Custom repositories**.
-3. Add the repo URL: `https://github.com/cmarko89/homeassistant-franklinwh`
+3. Add the repo URL: `https://github.com/Emkraan/homeassistant-franklinwh`
 4. Category: **Integration**. Click **Add**.
 5. Install **FranklinWH** from the list.
 6. Restart Home Assistant.
