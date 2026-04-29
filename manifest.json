@@ -9,5 +9,5 @@
   "integration_type": "hub",
   "issue_tracker": "https://github.com/cmarko89/homeassistant-franklinwh/issues",
   "requirements": ["franklinwh==2026.3.*"],
-  "version": "2026.4.2"
+  "version": "2026.4.3"
 }

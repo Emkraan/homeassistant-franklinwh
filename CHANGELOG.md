@@ -2,6 +2,13 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
+## [2026.4.3] — 2026-04-29
+
+### Fixed
+
+- Replace WebP icon with proper 256×256 PNG from official home-assistant/brands registry.
+- Add HACS one-click install badge to README.
+
 ## [2026.4.2] — 2026-04-29
 
 ### Fixed
