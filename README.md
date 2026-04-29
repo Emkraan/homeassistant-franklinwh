@@ -12,7 +12,7 @@
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge" alt="HACS Custom"></a>
   <a href="https://github.com/cmarko89/homeassistant-franklinwh/releases"><img src="https://img.shields.io/github/v/release/cmarko89/homeassistant-franklinwh?style=for-the-badge" alt="Latest release"></a>
   <a href="https://www.home-assistant.io/"><img src="https://img.shields.io/badge/Home%20Assistant-2026.2%2B-41BDF5?style=for-the-badge&logo=home-assistant&logoColor=white" alt="HA 2026.2+"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20%2F%20Apache--2.0-green?style=for-the-badge" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License"></a>
 </p>
 
 > ⚠️ This project is unofficial and not affiliated with FranklinWH.
@@ -221,4 +221,4 @@ logger:
 
 ## License
 
-Dual-licensed under the MIT License and the Apache License 2.0. Pick whichever you prefer.
+Licensed under the MIT License. See [LICENSE](LICENSE) for details.
