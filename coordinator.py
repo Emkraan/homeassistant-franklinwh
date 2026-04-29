@@ -73,9 +73,8 @@ def install_http_client_factory(hass: HomeAssistant) -> None:
         )
 
         def _factory() -> httpx.AsyncClient:
-            return create_async_httpx_client(
-                hass, alpn_protocols=SSL_ALPN_HTTP11_HTTP2
-            )
+            return create_async_httpx_client(hass, alpn_protocols=SSL_ALPN_HTTP11_HTTP2)
+
     else:
         # pylint: disable=import-outside-toplevel
         from homeassistant.helpers.httpx_client import (  # noqa: PLC0415

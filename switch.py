@@ -37,9 +37,7 @@ async def async_setup_entry(
         )
         return
 
-    async_add_entities(
-        FranklinSmartSwitch(coordinator, idx) for idx in range(3)
-    )
+    async_add_entities(FranklinSmartSwitch(coordinator, idx) for idx in range(3))
 
 
 class FranklinSmartSwitch(FranklinBaseEntity, SwitchEntity):

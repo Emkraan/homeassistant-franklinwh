@@ -51,9 +51,7 @@ async def async_setup_entry(
 ) -> None:
     """Add binary sensors."""
     coordinator: FranklinDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(
-        FranklinBinarySensor(coordinator, d) for d in BINARY_SENSORS
-    )
+    async_add_entities(FranklinBinarySensor(coordinator, d) for d in BINARY_SENSORS)
 
 
 class FranklinBinarySensor(FranklinBaseEntity, BinarySensorEntity):
