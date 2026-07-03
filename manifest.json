@@ -1,13 +1,13 @@
 {
   "domain": "franklin_wh",
   "name": "FranklinWH",
-  "codeowners": ["@cmarko89"],
+  "codeowners": ["@Emkraan"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/cmarko89/homeassistant-franklinwh",
+  "documentation": "https://github.com/Emkraan/homeassistant-franklinwh",
   "iot_class": "cloud_polling",
   "integration_type": "hub",
-  "issue_tracker": "https://github.com/cmarko89/homeassistant-franklinwh/issues",
+  "issue_tracker": "https://github.com/Emkraan/homeassistant-franklinwh/issues",
   "requirements": ["franklinwh==2026.3.*"],
   "version": "2026.4.3"
 }
