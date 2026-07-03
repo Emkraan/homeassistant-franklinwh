@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/hacs/integration"><img src="https://img.shields.io/badge/HACS-Custom-blue.svg?style=for-the-badge" alt="HACS Custom"></a>
-  <a href="https://github.com/cmarko89/homeassistant-franklinwh/releases"><img src="https://img.shields.io/github/v/release/cmarko89/homeassistant-franklinwh?style=for-the-badge" alt="Latest release"></a>
+  <a href="https://github.com/Emkraan/homeassistant-franklinwh/releases"><img src="https://img.shields.io/github/v/release/Emkraan/homeassistant-franklinwh?style=for-the-badge" alt="Latest release"></a>
   <a href="https://www.home-assistant.io/"><img src="https://img.shields.io/badge/Home%20Assistant-2026.2%2B-41BDF5?style=for-the-badge&logo=home-assistant&logoColor=white" alt="HA 2026.2+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="License"></a>
 </p>
