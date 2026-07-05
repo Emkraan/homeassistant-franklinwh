@@ -70,7 +70,7 @@ Or manually:
 
 ### Manual
 
-1. Copy this repository's contents into `<config>/custom_components/franklin_wh/`.
+1. Copy this repository's `custom_components/franklin_wh/` folder into `<config>/custom_components/franklin_wh/`.
 2. Restart Home Assistant.
 3. Add the integration from the UI as above.
 
