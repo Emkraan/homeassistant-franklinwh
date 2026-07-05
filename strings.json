@@ -67,9 +67,9 @@
       "grid_status": {
         "name": "Grid status",
         "state": {
-          "NORMAL": "Normal",
-          "DOWN": "Down",
-          "OFF": "Off"
+          "normal": "Normal",
+          "down": "Down",
+          "off": "Off"
         }
       },
       "solar_production": {"name": "Solar production"},

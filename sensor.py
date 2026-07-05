@@ -83,8 +83,11 @@ SENSOR_DESCRIPTIONS: tuple[FranklinSensorEntityDescription, ...] = (
         key="grid_status",
         translation_key="grid_status",
         device_class=SensorDeviceClass.ENUM,
-        options=[s.name for s in GridStatus],
-        value_fn=lambda d: d.stats.current.grid_status.name,
+        # HA translation keys must be lowercase; GridStatus.name is uppercase
+        # (e.g. "NORMAL") since it comes straight from the franklinwh library's
+        # enum member names.
+        options=[s.name.lower() for s in GridStatus],
+        value_fn=lambda d: d.stats.current.grid_status.name.lower(),
     ),
     FranklinSensorEntityDescription(
         key="solar_production",
