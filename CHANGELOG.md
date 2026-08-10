@@ -2,6 +2,16 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
+## [2026.8.10] — 2026-08-10
+
+### Changed
+- Restructured to the standard `custom_components/franklin_wh/` directory layout required
+  by Home Assistant and HACS.
+- Lowercase `grid_status` translation keys and sensor values for consistency.
+- Applied Black formatting to all Python source files.
+- Repo standard compliance: MIT license, CODEOWNERS, SECURITY.md, `.gitignore`, renovate.json,
+  shared ha-shared-workflows CI, funding.
+
 ## [2026.4.3] — 2026-04-29
 
 ### Fixed
