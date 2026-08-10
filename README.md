@@ -5,7 +5,7 @@
 <h1 align="center">FranklinWH Integration for Home Assistant</h1>
 
 <p align="center">
-  Monitor and control FranklinWH aPower / aGate energy storage from Home Assistant — fully UI-configurable, multi-gateway aware, Energy-dashboard ready.
+  Monitor and control FranklinWH aPower / aGate energy storage from Home Assistant - fully UI-configurable, multi-gateway aware, Energy-dashboard ready.
 </p>
 
 <p align="center">
@@ -38,15 +38,15 @@
 
 ## Features
 
-- **UI configuration** — add the integration from Settings → Devices & Services. No YAML needed.
-- **Multi-gateway aware** — accounts with more than one aGate get a picker; each gateway becomes its own device with its own entities.
-- **Reauthentication flow** — when your password changes, Home Assistant prompts to re-enter it; no restart needed.
-- **One device, all entities** — every sensor, switch, number, and select lives under a single FranklinWH device card.
-- **Read & write** — not just monitoring. Toggle smart circuits, change operating mode, set battery reserve, change export mode and limit, enable/disable the generator.
-- **Energy Dashboard ready** — kWh sensors carry the right device classes for the HA Energy panel.
-- **Stale-tolerant polling** — keeps the last good reading on the dashboard during transient cloud outages instead of strobing entities to "unavailable".
-- **Sign-flip toggles** — invert battery / grid sign at the entity layer (no template-sensor workaround).
-- **Service calls** — `franklin_wh.set_mode`, `franklin_wh.set_export_settings`, `franklin_wh.set_generator` for use in scripts and automations.
+- **UI configuration** - add the integration from Settings → Devices & Services. No YAML needed.
+- **Multi-gateway aware** - accounts with more than one aGate get a picker; each gateway becomes its own device with its own entities.
+- **Reauthentication flow** - when your password changes, Home Assistant prompts to re-enter it; no restart needed.
+- **One device, all entities** - every sensor, switch, number, and select lives under a single FranklinWH device card.
+- **Read & write** - not just monitoring. Toggle smart circuits, change operating mode, set battery reserve, change export mode and limit, enable/disable the generator.
+- **Energy Dashboard ready** - kWh sensors carry the right device classes for the HA Energy panel.
+- **Stale-tolerant polling** - keeps the last good reading on the dashboard during transient cloud outages instead of strobing entities to "unavailable".
+- **Sign-flip toggles** - invert battery / grid sign at the entity layer (no template-sensor workaround).
+- **Service calls** - `franklin_wh.set_mode`, `franklin_wh.set_export_settings`, `franklin_wh.set_generator` for use in scripts and automations.
 
 ---
 
@@ -81,7 +81,7 @@ Or manually:
 All configuration is done via the UI. You will need:
 
 - The **email and password** for your FranklinWH account.
-- (Optional) Your **gateway serial number** — needed only if you have multiple aGates and want to confirm which one to add.
+- (Optional) Your **gateway serial number** - needed only if you have multiple aGates and want to confirm which one to add.
 
 > Find the gateway SN in the FranklinWH mobile app: **Settings → Device Info → SN**.
 
@@ -92,7 +92,7 @@ After setup, click **Configure** on the integration card to access:
 | Option | Default | What it does |
 |---|---|---|
 | Entity name prefix | `FranklinWH` | Prefix used in entity friendly names |
-| Update interval (seconds) | `30` | How often to poll the FranklinWH cloud (10–600s) |
+| Update interval (seconds) | `30` | How often to poll the FranklinWH cloud (10-600s) |
 | Keep last-known data when the cloud fails | `on` | Avoids dashboard strobing during transient outages |
 | Flip battery-use sign | `off` | Invert sign of `battery_use` so charge/discharge match your convention |
 | Flip grid-use sign | `off` | Invert sign of `grid_use` so import/export match your convention |
@@ -116,7 +116,7 @@ All entities are grouped under one device per gateway.
 | Grid use | Live import/export power | kW |
 | Grid import | Lifetime energy imported | kWh |
 | Grid export | Lifetime energy exported | kWh |
-| Grid status | Enum: NORMAL / DOWN / OFF | — |
+| Grid status | Enum: NORMAL / DOWN / OFF | - |
 | Solar production | Live solar power | kW |
 | Solar energy | Lifetime solar energy | kWh |
 | Generator output | Live generator power | kW |
@@ -140,14 +140,14 @@ All entities are grouped under one device per gateway.
 | Smart Circuit 2 | Relay 2 |
 | V2L circuit | Relay 3 |
 
-> ⚠️ If two circuits are physically merged at the gateway (`SwMerge`), the FranklinWH cloud will refuse mismatched commands to protect your wiring. Toggling one will return an error in that case — set both to the same value, or unmerge in the FranklinWH app.
+> ⚠️ If two circuits are physically merged at the gateway (`SwMerge`), the FranklinWH cloud will refuse mismatched commands to protect your wiring. Toggling one will return an error in that case - set both to the same value, or unmerge in the FranklinWH app.
 
 ### Number
 
 | Entity | Range | Notes |
 |---|---|---|
-| Battery reserve | 0–100 % | Reserves battery SoC for the **active** operating mode |
-| Grid export limit | 0–100 kW | Hidden when export mode is "no export" |
+| Battery reserve | 0-100 % | Reserves battery SoC for the **active** operating mode |
+| Grid export limit | 0-100 kW | Hidden when export mode is "no export" |
 
 ### Select
 
@@ -168,7 +168,7 @@ Change operating mode and (optionally) the SoC reserve in one call.
 service: franklin_wh.set_mode
 data:
   mode: time_of_use     # or self_consumption / emergency_backup
-  reserve_soc: 20       # optional, 0–100
+  reserve_soc: 20       # optional, 0-100
   gateway: "100xxxx"    # optional, only needed if you have multiple gateways
 ```
 
