@@ -2,7 +2,7 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
-## [2026.8.10] — 2026-08-10
+## [2026.8.10] - 2026-08-10
 
 ### Changed
 - Restructured to the standard `custom_components/franklin_wh/` directory layout required
@@ -12,26 +12,26 @@ All notable changes to this integration are documented here. Versions follow the
 - Repo standard compliance: MIT license, CODEOWNERS, SECURITY.md, `.gitignore`, renovate.json,
   shared ha-shared-workflows CI, funding.
 
-## [2026.4.3] — 2026-04-29
+## [2026.4.3] - 2026-04-29
 
 ### Fixed
 
 - Replace WebP icon with proper 256×256 PNG from official home-assistant/brands registry.
 - Add HACS one-click install badge to README.
 
-## [2026.4.2] — 2026-04-29
+## [2026.4.2] - 2026-04-29
 
 ### Fixed
 
-- README header image uses absolute raw.githubusercontent.com URL — fixes broken image in HACS.
+- README header image uses absolute raw.githubusercontent.com URL - fixes broken image in HACS.
 
-## [2026.4.1] — 2026-04-28
+## [2026.4.1] - 2026-04-28
 
 ### Fixed
 
 - Startup failures (cloud unreachable at boot) now raise `ConfigEntryNotReady` instead of permanently marking the entry as "Not loaded." Home Assistant will retry automatically with exponential backoff until the gateway is reachable.
 
-## [2026.4.0] — 2026-04-28
+## [2026.4.0] - 2026-04-28
 
 ### Breaking
 
@@ -40,19 +40,19 @@ All notable changes to this integration are documented here. Versions follow the
 
 ### Added
 
-- **UI configuration flow** — Settings → Devices & Services → Add Integration → FranklinWH. Validates credentials, auto-detects gateways, offers a picker if multiple are bound to the account.
-- **Reauthentication flow** — when stored credentials stop working, HA prompts to re-enter the password without a restart.
-- **Options flow** — update interval, name prefix, stale-data tolerance, and per-axis sign-flip toggles for battery / grid power.
-- **Multi-gateway support** — each aGate becomes its own config entry and HA device.
-- **Device grouping** — every entity registers under one `DeviceInfo` per gateway.
-- **Binary sensors** — `grid_online`, `generator_enabled`.
-- **Number entities** — battery reserve SoC %, grid-export limit kW (hidden when export mode is `no_export`).
-- **Select entities** — operating mode (TOU / self-consumption / emergency backup), grid-export mode (solar-only / solar-and-battery / no-export).
-- **Per-relay smart-circuit switches** — three independent switches instead of one ganged.
-- **Service calls** — `franklin_wh.set_mode`, `franklin_wh.set_export_settings`, `franklin_wh.set_generator`.
-- **Translations / strings** — full `strings.json` + `translations/en.json`.
-- **Generator energy sensor** — registers correctly (it was orphaned in 2026.3.x).
-- **GitHub issue forms** — structured bug-report and feature-request templates.
+- **UI configuration flow** - Settings → Devices & Services → Add Integration → FranklinWH. Validates credentials, auto-detects gateways, offers a picker if multiple are bound to the account.
+- **Reauthentication flow** - when stored credentials stop working, HA prompts to re-enter the password without a restart.
+- **Options flow** - update interval, name prefix, stale-data tolerance, and per-axis sign-flip toggles for battery / grid power.
+- **Multi-gateway support** - each aGate becomes its own config entry and HA device.
+- **Device grouping** - every entity registers under one `DeviceInfo` per gateway.
+- **Binary sensors** - `grid_online`, `generator_enabled`.
+- **Number entities** - battery reserve SoC %, grid-export limit kW (hidden when export mode is `no_export`).
+- **Select entities** - operating mode (TOU / self-consumption / emergency backup), grid-export mode (solar-only / solar-and-battery / no-export).
+- **Per-relay smart-circuit switches** - three independent switches instead of one ganged.
+- **Service calls** - `franklin_wh.set_mode`, `franklin_wh.set_export_settings`, `franklin_wh.set_generator`.
+- **Translations / strings** - full `strings.json` + `translations/en.json`.
+- **Generator energy sensor** - registers correctly (it was orphaned in 2026.3.x).
+- **GitHub issue forms** - structured bug-report and feature-request templates.
 - `CHANGELOG.md`, `CONTRIBUTING.md`.
 
 ### Fixed
