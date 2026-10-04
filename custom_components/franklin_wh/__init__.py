@@ -16,7 +16,6 @@ import franklinwh
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_ID, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.typing import ConfigType
 
@@ -93,16 +92,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = FranklinDataUpdateCoordinator(
         hass,
+        entry,
         client=client,
         gateway_id=gateway,
         update_interval=timedelta(seconds=int(interval_s)),
         tolerate_stale_data=bool(tolerate_stale),
     )
-    await coordinator.async_refresh()
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady(
-            f"FranklinWH gateway {gateway!r} not reachable at startup; will retry"
-        )
+    # Raises ConfigEntryAuthFailed (starts reauth) on bad credentials and
+    # ConfigEntryNotReady carrying the real cause on transient failures.
+    await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     await async_register_services(hass)

@@ -210,6 +210,7 @@ After the import succeeds, delete the `franklin_wh` blocks from `configuration.y
 | `Invalid auth` during setup | Wrong email/password | Double-check; note that FranklinWH may temporarily lock the account after several failed tries |
 | `Account locked` | Too many failed logins | Wait 15 minutes |
 | `Cannot connect` | Cloud outage or DNS | Check `https://energy.franklinwh.com/` from the HA host |
+| `Failed setup, will retry: FranklinWH fetch failed: ...` | Cloud or gateway transiently unavailable at startup | Home Assistant retries automatically; the text after `fetch failed:` is the real cause. Credential problems open a re-authentication prompt instead |
 | Entities go "unavailable" intermittently | Cloud is flaky | Make sure **Keep last-known data when the cloud fails** is enabled in options |
 | Smart-circuit toggle returns `RuntimeError` | The gateway has the relays merged (`SwMerge=1`) | Toggle both relays together via the service call, or unmerge in the FranklinWH app |
 | No switches appear | Gateway reports no Smart Circuit module | Confirm hardware presence in the FranklinWH app |
