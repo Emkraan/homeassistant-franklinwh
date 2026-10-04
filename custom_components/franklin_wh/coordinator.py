@@ -31,6 +31,7 @@ from franklinwh.client import (
 )
 import httpx
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     MAJOR_VERSION as HASS_MAJOR_VERSION,
     MINOR_VERSION as HASS_MINOR_VERSION,
@@ -123,6 +124,7 @@ class FranklinDataUpdateCoordinator(DataUpdateCoordinator[FranklinData]):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: ConfigEntry,
         client: Client,
         gateway_id: str,
         update_interval: timedelta,
@@ -132,6 +134,7 @@ class FranklinDataUpdateCoordinator(DataUpdateCoordinator[FranklinData]):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=config_entry,
             name=f"franklinwh:{gateway_id}",
             update_interval=update_interval,
             always_update=False,

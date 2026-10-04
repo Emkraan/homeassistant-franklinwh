@@ -2,6 +2,13 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
+## [2026.10.0] - 2026-10-04
+
+### Fixed
+- Startup failures no longer collapse into a generic "not reachable at startup" retry. Invalid
+  credentials or a locked account now open the re-authentication flow instead of retrying
+  forever, and transient failures show the real underlying error on the integration card.
+
 ## [2026.8.10] - 2026-08-10
 
 ### Changed
