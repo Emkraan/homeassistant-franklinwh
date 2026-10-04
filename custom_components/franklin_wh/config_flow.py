@@ -267,15 +267,11 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
         """Return the options flow handler."""
-        return FranklinWHOptionsFlow(config_entry)
+        return FranklinWHOptionsFlow()
 
 
 class FranklinWHOptionsFlow(OptionsFlow):
     """Options flow for FranklinWH."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Init."""
-        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
