@@ -2,6 +2,12 @@
 
 All notable changes to this integration are documented here. Versions follow the upstream `franklinwh` Python package, suffixed with our own patch counter when needed.
 
+## [2026.10.1] - 2026-10-04
+
+### Fixed
+- Options (gear) dialog failed with "Config flow could not be loaded: 500". The options flow
+  no longer sets `config_entry` explicitly, which current Home Assistant rejects.
+
 ## [2026.10.0] - 2026-10-04
 
 ### Fixed
