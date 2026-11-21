@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
-import logging
 
 from franklinwh import GridStatus
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,

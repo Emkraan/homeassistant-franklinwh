@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 
 from franklinwh import ExportMode, Mode
-
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -89,10 +88,7 @@ class ExportModeSelect(FranklinBaseEntity, SelectEntity):
     @property
     def current_option(self) -> str | None:
         """Return current export mode."""
-        if (
-            self.coordinator.data is None
-            or self.coordinator.data.export_settings is None
-        ):
+        if self.coordinator.data is None or self.coordinator.data.export_settings is None:
             return None
         return self.coordinator.data.export_settings.mode.name.lower()
 

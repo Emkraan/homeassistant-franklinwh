@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import logging
+from collections.abc import Mapping
 from typing import Any
 
 import franklinwh
+import voluptuous as vol
 from franklinwh.client import (
     AccountLockedException,
     InvalidCredentialsException,
 )
-import voluptuous as vol
-
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -57,12 +56,12 @@ def _user_schema(defaults: Mapping[str, Any] | None = None) -> vol.Schema:
     defaults = defaults or {}
     return vol.Schema(
         {
-            vol.Required(
-                CONF_USERNAME, default=defaults.get(CONF_USERNAME, "")
-            ): TextSelector(TextSelectorConfig(type=TextSelectorType.EMAIL)),
-            vol.Required(
-                CONF_PASSWORD, default=defaults.get(CONF_PASSWORD, "")
-            ): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
+            vol.Required(CONF_USERNAME, default=defaults.get(CONF_USERNAME, "")): TextSelector(
+                TextSelectorConfig(type=TextSelectorType.EMAIL)
+            ),
+            vol.Required(CONF_PASSWORD, default=defaults.get(CONF_PASSWORD, "")): TextSelector(
+                TextSelectorConfig(type=TextSelectorType.PASSWORD)
+            ),
         }
     )
 
@@ -95,9 +94,7 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
         self._password: str | None = None
         self._gateways: list[dict] = []
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Collect credentials, then proceed to gateway selection."""
         errors: dict[str, str] = {}
 
@@ -151,17 +148,13 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_GATEWAY): SelectSelector(
-                        SelectSelectorConfig(
-                            options=options, mode=SelectSelectorMode.DROPDOWN
-                        )
+                        SelectSelectorConfig(options=options, mode=SelectSelectorMode.DROPDOWN)
                     )
                 }
             ),
         )
 
-    async def async_step_reauth(
-        self, entry_data: Mapping[str, Any]
-    ) -> ConfigFlowResult:
+    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:
         """Triggered when stored credentials stop working."""
         self._username = entry_data.get(CONF_USERNAME)
         return await self.async_step_reauth_confirm()
@@ -176,9 +169,7 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             install_http_client_factory(self.hass)
             try:
-                await _validate_credentials(
-                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
-                )
+                await _validate_credentials(user_input[CONF_USERNAME], user_input[CONF_PASSWORD])
             except InvalidCredentialsException:
                 errors["base"] = "invalid_auth"
             except AccountLockedException:
@@ -219,9 +210,7 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
         try:
             await _validate_credentials(username, password)
         except Exception as err:  # noqa: BLE001
-            _LOGGER.warning(
-                "YAML import for gateway %s failed validation: %s", gateway, err
-            )
+            _LOGGER.warning("YAML import for gateway %s failed validation: %s", gateway, err)
             return self.async_abort(reason="cannot_connect")
 
         return self.async_create_entry(
@@ -273,9 +262,7 @@ class FranklinWHConfigFlow(ConfigFlow, domain=DOMAIN):
 class FranklinWHOptionsFlow(OptionsFlow):
     """Options flow for FranklinWH."""
 
-    async def async_step_init(
-        self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Single options page."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
@@ -291,9 +278,7 @@ class FranklinWHOptionsFlow(OptionsFlow):
                     ): str,
                     vol.Optional(
                         CONF_UPDATE_INTERVAL,
-                        default=opts.get(
-                            CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL_SECONDS
-                        ),
+                        default=opts.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL_SECONDS),
                     ): NumberSelector(
                         NumberSelectorConfig(
                             min=MIN_UPDATE_INTERVAL_SECONDS,
@@ -305,9 +290,7 @@ class FranklinWHOptionsFlow(OptionsFlow):
                     ),
                     vol.Optional(
                         CONF_TOLERATE_STALE_DATA,
-                        default=opts.get(
-                            CONF_TOLERATE_STALE_DATA, DEFAULT_TOLERATE_STALE_DATA
-                        ),
+                        default=opts.get(CONF_TOLERATE_STALE_DATA, DEFAULT_TOLERATE_STALE_DATA),
                     ): BooleanSelector(),
                     vol.Optional(
                         CONF_REVERSE_BATTERY_SIGN,
