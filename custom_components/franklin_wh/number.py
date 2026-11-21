@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 
 from franklinwh import ExportMode, Mode
-
 from homeassistant.components.number import (
     NumberDeviceClass,
     NumberEntity,
@@ -101,10 +100,7 @@ class ExportLimitNumber(FranklinBaseEntity, NumberEntity):
     @property
     def native_value(self) -> float | None:
         """Current export limit in kW (None means unlimited)."""
-        if (
-            self.coordinator.data is None
-            or self.coordinator.data.export_settings is None
-        ):
+        if self.coordinator.data is None or self.coordinator.data.export_settings is None:
             return None
         return self.coordinator.data.export_settings.limit_kw
 
@@ -118,10 +114,7 @@ class ExportLimitNumber(FranklinBaseEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         """Push a new export cap, preserving current mode."""
-        if (
-            self.coordinator.data is None
-            or self.coordinator.data.export_settings is None
-        ):
+        if self.coordinator.data is None or self.coordinator.data.export_settings is None:
             return
         current_mode = self.coordinator.data.export_settings.mode
         await self.coordinator.client.set_export_settings(current_mode, float(value))

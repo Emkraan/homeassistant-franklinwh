@@ -8,11 +8,10 @@ issue via the Repairs registry.
 
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import franklinwh
-
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_ID, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -83,12 +82,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     fetcher = franklinwh.TokenFetcher(username, password)
     client = franklinwh.Client(fetcher, gateway)
 
-    interval_s = entry.options.get(
-        CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL_SECONDS
-    )
-    tolerate_stale = entry.options.get(
-        CONF_TOLERATE_STALE_DATA, DEFAULT_TOLERATE_STALE_DATA
-    )
+    interval_s = entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL_SECONDS)
+    tolerate_stale = entry.options.get(CONF_TOLERATE_STALE_DATA, DEFAULT_TOLERATE_STALE_DATA)
 
     coordinator = FranklinDataUpdateCoordinator(
         hass,

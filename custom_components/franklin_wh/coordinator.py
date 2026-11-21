@@ -9,12 +9,13 @@ transient cloud failures so dashboards stop strobing to "unavailable".
 from __future__ import annotations
 
 import asyncio
+import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
-import logging
 from typing import Any
 
 import franklinwh
+import httpx
 from franklinwh import (
     AccessoryType,
     Client,
@@ -29,11 +30,11 @@ from franklinwh.client import (
     InvalidCredentialsException,
     InvalidDataException,
 )
-import httpx
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     MAJOR_VERSION as HASS_MAJOR_VERSION,
+)
+from homeassistant.const import (
     MINOR_VERSION as HASS_MINOR_VERSION,
 )
 from homeassistant.core import HomeAssistant
@@ -55,9 +56,7 @@ def supports_http2() -> bool:
     """Return whether the running HA version exposes ALPN HTTP/2 helpers."""
     if HASS_MAJOR_VERSION > 2026:
         return True
-    if HASS_MAJOR_VERSION == 2026 and HASS_MINOR_VERSION >= 2:
-        return True
-    return False
+    return bool(HASS_MAJOR_VERSION == 2026 and HASS_MINOR_VERSION >= 2)
 
 
 def install_http_client_factory(hass: HomeAssistant) -> None:
@@ -186,9 +185,7 @@ class FranklinDataUpdateCoordinator(DataUpdateCoordinator[FranklinData]):
             httpx.HTTPError,
         ) as err:
             if self.tolerate_stale_data and self._last_good is not None:
-                _LOGGER.warning(
-                    "FranklinWH fetch failed (%s); reusing last-known data", err
-                )
+                _LOGGER.warning("FranklinWH fetch failed (%s); reusing last-known data", err)
                 return self._last_good
             raise UpdateFailed(f"FranklinWH fetch failed: {err}") from err
 

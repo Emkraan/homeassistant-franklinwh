@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import logging
 
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from franklinwh import ExportMode, Mode
 from franklinwh.client import InvalidCredentialsException
-import voluptuous as vol
-
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-import homeassistant.helpers.config_validation as cv
 
 from .const import (
     ALL_MODES,
@@ -44,9 +43,7 @@ SET_MODE_SCHEMA = vol.Schema(
     {
         vol.Optional(ATTR_GATEWAY): cv.string,
         vol.Required(ATTR_MODE): vol.In(ALL_MODES),
-        vol.Optional(ATTR_RESERVE_SOC): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=100)
-        ),
+        vol.Optional(ATTR_RESERVE_SOC): vol.All(vol.Coerce(int), vol.Range(min=0, max=100)),
     }
 )
 
@@ -68,9 +65,7 @@ SET_GENERATOR_SCHEMA = vol.Schema(
 )
 
 
-def _resolve_coordinator(
-    hass: HomeAssistant, gateway: str | None
-) -> FranklinDataUpdateCoordinator:
+def _resolve_coordinator(hass: HomeAssistant, gateway: str | None) -> FranklinDataUpdateCoordinator:
     """Pick a coordinator from `hass.data[DOMAIN]`, optionally filtered by gateway."""
     bucket: dict = hass.data.get(DOMAIN, {})
     coordinators: list[FranklinDataUpdateCoordinator] = list(bucket.values())
@@ -126,9 +121,7 @@ async def async_register_services(hass: HomeAssistant) -> None:
     """Register integration services (idempotent)."""
     if hass.services.has_service(DOMAIN, SERVICE_SET_MODE):
         return
-    hass.services.async_register(
-        DOMAIN, SERVICE_SET_MODE, _async_set_mode, schema=SET_MODE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN, SERVICE_SET_MODE, _async_set_mode, schema=SET_MODE_SCHEMA)
     hass.services.async_register(
         DOMAIN,
         SERVICE_SET_EXPORT_SETTINGS,
